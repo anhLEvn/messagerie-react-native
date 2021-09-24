@@ -1,119 +1,171 @@
-import React, { useState, useRef, useEffect } from 'react'
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native'
-import firebase from 'firebase'
+import React, {useState, useRef, useEffect} from 'react';
+import {View, Text, TextInput,TouchableOpacity, StyleSheet} from 'react-native';
+import firebase from 'firebase';
 
-export default function Chat({ route }) {
-  const [message, setMessage] = useState('')
-  const [messageList, setMessageList] = useState([])
-  const messageRef = useRef()
+export default function Chat({route}){
+  const [message, setMessage] = useState('');
+  const [messageListe, setMessageListe] = useState([]);
+  const messageRef = useRef();
 
-  console.log(route.params.emitter)
-  console.log(route.params.receiver)
-  const transmitter = route.params.emitter
-  const recepter = route.params.receiver
+  const transmiter = route.params.emiter;
+  const recepter = route.params.receiver;
 
-
-  useEffect (() => {
-    getMessageList()
-
+  useEffect(() => {
+    getMessagelist();
   }, [])
 
-  const db = firebase.firestore(); 
+  const getMessagelist = () => {
+    const db = firebase.firestore();
+    // db.collection("messages").where("emitter", "==", transmiter)
+    // .get()
+    // .then((querySnapshot) => {
+    //   const messageTab = Array();
+    //   querySnapshot.forEach((doc) => {
+    //     // console.log(doc.id, " => ", doc.data());
+    //     messageTab.push(doc.data());
+    //   });
+    //   setMessageListe(messageTab);
+    // })
+    // .catch((error) => {
+    //   console.log("Error getting documents: ", error);
+    // });
 
-  const getMessageList = () => {
-    db.collection("messages").where("emitter", "==", transmitter && "receiver", '==' , recepter)
-    .get()
+    db.collection("messages").orderBy('date').get()
     .then((querySnapshot) => {
-        const messageTab = Array(); 
-        querySnapshot.forEach((doc) => {
-
-            // doc.data() is never undefined for query doc snapshots
-            console.log(doc.id, " => ", doc.data());
-            messageTab.push(doc.data()); //
-        });
-        setMessageList(messageTab); 
+      const messageTab = Array();
+      querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        // console.log(doc.id, " => ", doc.data());
+        messageTab.push(doc.data());
+      });
+      setMessageListe(messageTab);
+      // console.log(messageTab);
     })
     .catch((error) => {
-        console.log("Error getting documents: ", error);
-    });
+      console.error(error);
+    })
+  }
 
-  }
   const handleSubmit = () => {
-    // Add a new document in collection "cities"
-    
-    db.collection('messages')
-      .doc()
-      .set({
-        emitter: transmitter,
-        receiver:recepter,
-        message: message,
-        date: new Date(),
-      })
-      .then(() => {
-        console.log('Document successfully written!')
-      })
-      .catch((error) => {
-        console.error('Error writing document: ', error)
-      })
+    const db = firebase.firestore();
+    db.collection("messages").doc().set({
+      emitter: transmiter,
+      receiver: recepter,
+      message: message,
+      date: new Date(),
+    })
+    .then(() => {
+      // console.log("Document successfully written!");
+      getMessagelist();
+      messageRef.current.setNativeProps({text: ""});
+    })
+    .catch((error) => {
+      console.error("Error writing document: ", error);
+    });
   }
-  return (
-    <View>
+
+  return(
+    <View style={styles.container}>
       <View style={styles.top}>
-      
-        <Text>Ici les messages</Text>
         {
-            messageList.map((message) =>(
-            
-            <Text>{message.message}</Text>
-          ))
+          messageListe.map(message => {
+            {
+              if(message.emitter == transmiter){
+                return(
+                  <View style={styles.left}>
+                    <Text>{message.message}</Text>
+                    <Text>
+                      {new Date(message.date * 1000).getHours()} H
+                      {new Date(message.date * 1000).getMinutes()} min
+                    </Text>
+                    {/* <Text>{new Date(message.date * 1000).getMinutes()}</Text> */}
+                  </View>
+                )
+              }else if(message.emitter == recepter){
+                return(
+                  <View style={styles.right}>
+                    <Text>{message.message}</Text>
+                    {new Date(message.date * 1000).getHours()} H
+                      {new Date(message.date * 1000).getMinutes()} min
+                    {/* <Text>{new Date(message.date * 1000).getMinutes()}</Text> */}
+                  </View>
+                )
+              }else{
+                return <Text></Text>
+              }
+            }
+          })
         }
-        
+      </View>
+      <View style={styles.bottom}>
         <TextInput
           style={styles.input}
-          placeholder="Votre message"
+          placeholder="votre message"
           ref={messageRef}
-          onChangeText={(e) => setMessage(e)}
+          onChangeText={e => setMessage(e)}
         />
-      </View>
-      <View style={styles.top}>
         <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-          <Text>Send</Text>
+          <Text>send</Text>
         </TouchableOpacity>
       </View>
-
-      <Text>Emmitteur: {transmitter}</Text>
-      <Text>Recepteur: {recepter}</Text>
     </View>
   )
 }
+// tableauObjets.sort(function compare(a, b) {
+//   if (a.nom < b.nom)
+//   return -1;
+//   if (a.nom > b.nom )
+//   return 1;
+//   return 0;
+//   }); 
 const styles = StyleSheet.create({
-  container: {
+  container:{
     flex: 1,
-    width: '100%',
+    width: "100%",
   },
-  top: {
+  top:{
     flex: 22,
-    width: '100%',
+    width: "100%"
   },
-  bottom: {
+  bottom:{
     flex: 3,
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center"
   },
-  input: {
+  input:{
     height: 50,
-    width: '100%',
-    borderWidth: 1,
-    paddingLeft: 10,
+    width: "100%",
+    borderWidth:1,
+    paddingLeft: 10
   },
-  button: {
+  button:{
     height: 30,
-    width: '20%',
-    backgroundColor: 'orange',
+    width: "20%",
+    backgroundColor: "orange",
     borderRadius: 10,
     marginTop: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center"
   },
+  left: {
+    height: 30,
+    backgroundColor: "red",
+    width: "50%",
+    borderRadius: 15,
+    marginTop: 15,
+    marginLeft: "35%",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  right: {
+    height: 30,
+    backgroundColor: "green",
+    width: "50%",
+    borderRadius: 15,
+    marginTop: 15,
+    marginLeft: 20,
+    justifyContent: "center",
+    alignItems: "center"
+  }
 })
