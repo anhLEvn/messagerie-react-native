@@ -2,10 +2,11 @@ import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import firebase from 'firebase';
 
-export default function Users(){
+export default function Users({user}){
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
+   // console.log(user);
     getUserListe();
   },[])
 
@@ -17,9 +18,19 @@ export default function Users(){
       querySnapshot.forEach((doc) => {
         // doc.data() is never undefined for query doc snapshots
         // console.log(doc.id, " => ", doc.data());
-        userstab.push(doc.data());
+        //userstab.push(doc.data());
+        const user = {
+          id: doc.id, 
+          data: doc.data(),
+        }
+        userstab.push(user);
+        
       });
-      setUsers(userstab);
+      const newuserstab = userstab.filter(item => item.id != user);
+      console.log(newuserstab);
+  
+      setUsers(newuserstab);
+      //setUsers(userstab);
     });
   }
 
@@ -37,8 +48,8 @@ export default function Users(){
       } */}
       {
         users.map((user) => (
-          <TouchableOpacity key = {user.pseudo} style = {styles.user}>
-          <Text>{user.name}</Text>
+          <TouchableOpacity key = {user.id} style = {styles.user}>
+          <Text style={styles.text}>{user.data.name}</Text>
           </TouchableOpacity>
         ))
       }
@@ -49,7 +60,8 @@ export default function Users(){
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: 100, 
+    width: '100%', 
+    backgroundColor:'#E2D98F'
   },
   user: {
     height: 50, 
@@ -57,7 +69,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginTop: 10, 
-    backgroundColor: '#E2D98F',
+    backgroundColor: 'nickel-light',
+    borderWidth: 1,
+    paddingLeft: 25,
+    paddingRight: 25,
+    borderRadius: 5
+
   },
   text: {
     fontSize:  20,

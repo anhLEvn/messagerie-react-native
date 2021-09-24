@@ -80,6 +80,7 @@ export default function Register(){
         placeholder="Password"
         onChangeText={(e) => setPassword(e)}
         ref={passwordRef}
+        secureTextEntry = 'true'
       />
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
         <Text>Register</Text>
@@ -90,27 +91,31 @@ export default function Register(){
 
 const styles = StyleSheet.create({
   container:{
-    width: "100%",
     flex: 1,
-    backgroundColor: '#E2D98F',
-    alignItems: "center",
+    width: "100%",
     justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#E2D98F"
   },
   input:{
-    width: "95%",
+    width: "90%",
     height: 50,
-    borderWidth:1,
-    borderRadius: 5,
-    paddingLeft: 10,
+    borderWidth: 1,
     marginTop: 20,
+    paddingLeft: 25,
+    borderRadius: 5
   },
   button:{
+    width: "50%",
     height: 50,
-    width: "95%",
-    justifyContent: "center",
+    backgroundColor: "#fca311",
     alignItems: "center",
-    borderRadius: 5,
-    margin: 10,
-    backgroundColor: "orange"
+    justifyContent: "center",
+    borderRadius: 10,
+    borderWidth: 3,
+    marginTop: 20
+  },
+  text:{
+    fontSize: 20
   }
 })

@@ -1,25 +1,46 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, { useState} from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import firebase from 'firebase'; 
 import Register from './vues/Register'
 import Users from './vues/Users'
+import Login from './vues/Login'
 
 
 
 const Tab = createMaterialTopTabNavigator();
 
 export default function App() {
+const [screen, setScreen] = useState(null); 
+
+const returnLoginScreen = () => {
+  return <Login updateScreen = {setScreen}/>
+}
+
+if (screen === null) {
   return (
     <NavigationContainer >
     <Tab.Navigator>
+    <Tab.Screen name="Login" >{returnLoginScreen}</Tab.Screen>
       <Tab.Screen name="Register" component={Register} />
-      <Tab.Screen name="Users" component={Users} />
-      </Tab.Navigator>     
+    </Tab.Navigator>     
     </NavigationContainer>
   );
+
+}else{
+  return (
+    <Users/>
+    // <NavigationContainer >
+    // <Tab.Navigator>
+    //   <Tab.Screen name="Users" component={Users} />
+    //   </Tab.Navigator>     
+    // </NavigationContainer>
+  );
+}
+
+ 
 }
 
 // const styles = StyleSheet.create({
