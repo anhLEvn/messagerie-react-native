@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import firebase from 'firebase';
 
 export default function Users(){
@@ -25,7 +25,7 @@ export default function Users(){
 
   return(
     <View style={styles.container}>
-      <Text>Users list</Text>
+      <Text style={styles.text}>Users list</Text>
       {/* {
         avec la mathode map au moment de definir la fonction flechee si on utilise des acolades apres la fleche il faut mettre un return
         si on utilise des parentheses on ne met pas le return 
@@ -37,7 +37,9 @@ export default function Users(){
       } */}
       {
         users.map((user) => (
+          <TouchableOpacity key = {user.pseudo} style = {styles.user}>
           <Text>{user.name}</Text>
+          </TouchableOpacity>
         ))
       }
     </View>
@@ -45,5 +47,20 @@ export default function Users(){
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: 100, 
+  },
+  user: {
+    height: 50, 
+    width: "95%",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 10, 
+    backgroundColor: '#E2D98F',
+  },
+  text: {
+    fontSize:  20,
+  }
 
 })

@@ -6,14 +6,20 @@ export default function Register(){
   const [pseudo, setPseudo] = useState('');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const pseudoRef = useRef();
   const nameRef = useRef();
   const phoneRef = useRef();
+  const emailRef = useRef();
+  const passwordRef = useRef();
 
   const handleSubmit = () => {
+    firebase.auth().createUserWithEmailAndPassword(email, password)
+  .then((userCredential) => {    
     const db = firebase.firestore();
-    db.collection("users").doc(pseudo).set({
+    db.collection("users").doc(email).set({
       pseudo: pseudo,
       name: name,
       phone: phone
@@ -25,12 +31,22 @@ export default function Register(){
     .catch((error) => {
       console.error("Error writing document: ", error);
     });
-  }
+  
+  })
+  .catch((error) => {
+    //var errorCode = error.code;
+    var errorMessage = error.message;
+    console.log(errorMessage);
+    // ..
+  });
+}
 
   function resetForm(){
     pseudoRef.current.setNativeProps({text: ""});
     nameRef.current.setNativeProps({text: ""});
     phoneRef.current.setNativeProps({text: ""});
+    emailRef.current.setNativeProps({text: ""});
+    passwordRef.current.setNativeProps({text: ""});
   }
 
   return(
@@ -52,6 +68,18 @@ export default function Register(){
         placeholder="Phone"
         onChangeText={(e) => setPhone(e)}
         ref={phoneRef}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        onChangeText={(e) => setEmail(e)}
+        ref={emailRef}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        onChangeText={(e) => setPassword(e)}
+        ref={passwordRef}
       />
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
         <Text>Register</Text>
