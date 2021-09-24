@@ -9,7 +9,7 @@ import Liste from './Liste'
 import firebase from 'firebase'
 
 const Stack = createNativeStackNavigator(); 
-export default function Users({ user }) { //(props)
+export default function Users({user}) { //(props)
   // const [users, setUsers] = useState([]);
 
   // useEffect(() => {
@@ -47,9 +47,11 @@ export default function Users({ user }) { //(props)
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Liste">
+        {/* <Stack.Screen name="Liste">
           {returnListeScreen}
-        </Stack.Screen>
+        </Stack.Screen> */}
+        
+        <Stack.Screen name="Liste" component={Liste} initialParams ={{itemId:user}} />
         <Stack.Screen name="Chat" component={Chat} />
       </Stack.Navigator>
     </NavigationContainer>

@@ -7,12 +7,15 @@ import firebase from 'firebase';
 
 const Stack = createNativeStackNavigator(); 
 
-export default function Liste({user}) {
+export default function Liste({route, navigation}) {
 
     const [users, setUsers] = useState([]);
+    console.log(route.params.itemId);
+    const user1 = route.params.itemId; 
 
     useEffect(() => {
      // console.log(user);
+     //console.log(navigation);
       getUserListe();
     },[])
   
@@ -32,7 +35,7 @@ export default function Liste({user}) {
           userstab.push(user);
           
         });
-        const newuserstab = userstab.filter(item => item.id != user);
+        const newuserstab = userstab.filter(item => item.id != user1);
         console.log(newuserstab);
     
         setUsers(newuserstab);
@@ -56,7 +59,10 @@ export default function Liste({user}) {
         {
           users.map((user) => (
             
-            <TouchableOpacity key = {user.id} style = {styles.user}>
+            <TouchableOpacity 
+            key = {user.id} 
+            style = {styles.user}
+            onPress = {() => navigation.navigate("Chat", {emitter: user1, receiver: user.id})}>
             <Text style={styles.text}>{user.data.name}</Text>
             </TouchableOpacity>
           ))

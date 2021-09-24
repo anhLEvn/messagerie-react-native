@@ -13,7 +13,7 @@ import Login from './vues/Login'
 const Tab = createMaterialTopTabNavigator();
 
 export default function App() {
-const [screen, setScreen] = useState(null); 
+const [screen, setScreen] = useState("van.anh.le.bacquelot@gmail.com"); 
 
 const returnLoginScreen = () => {
   return <Login updateScreen = {setScreen}/>
@@ -31,7 +31,7 @@ if (screen === null) {
 
 }else{
   return (
-    <Users/>
+    <Users user = {screen}/>
     // <NavigationContainer >
     // <Tab.Navigator>
     //   <Tab.Screen name="Users" component={Users} />
